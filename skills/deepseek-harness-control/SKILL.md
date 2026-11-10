@@ -1,6 +1,6 @@
 ---
 name: deepseek-harness-control
-description: "在 Windows 上控制 DeepSeek Harness（DSH）：定位指定会话、发送已授权任务、只读监控进展，并独立核验本地产物。用户要求操作、继续、检查或监控 Harness 任务时使用；不用于 DeepSeek 网页聊天或直接调用模型 API。"
+description: "在 macOS 上控制 DeepSeek Harness（DSH）：定位指定会话、发送已授权任务、只读监控进展，并独立核验本地产物。用户要求操作、继续、检查或监控 Harness 任务时使用；不用于 DeepSeek 网页聊天或直接调用模型 API。"
 ---
 
 # DeepSeek Harness 控制
@@ -9,9 +9,19 @@ description: "在 Windows 上控制 DeepSeek Harness（DSH）：定位指定会�
 
 ## 前置条件
 
-需要 Windows、已安装的 DeepSeek Harness，以及支持 `@oai/sky` 的 `node_repl` 和 `computer-use:computer-use` 技能。先读取当前环境所列 Computer Use 技能及其要求的 guidance、API、confirmations；它们决定允许的 UI 操作。本技能不捆绑或安装这些组件。缺少运行能力时说明具体缺项，仍可整理任务与检查已授权本地文件；不得假装已经控制窗口。
+需要 macOS、正在运行的 DeepSeek Harness，以及支持 `@oai/sky` 的 `node_repl` 和 `computer-use:computer-use` 技能（Codex 的 Computer Use 插件）。先读取当前环境所列 Computer Use 技能及其要求的 guidance、API、confirmations；它们决定允许的 UI 操作。本技能不捆绑或安装这些组件。缺少运行能力时说明具体缺项，仍可整理任务与检查已授权本地文件；不得假装已经控制窗口。
 
-对普通已运行的本机 Harness 使用原生 Computer Use。若以后存在已确认的官方接口且具备所需能力，可优先使用；不要靠猜测端口、读取凭据或私有数据库来绕过界面。
+Computer Use 在 macOS 上依赖系统的**屏幕录制**与**辅助功能**授权（系统设置 → 隐私与安全性）。缺少授权、出现授权弹窗或权限被重置时，停止输入并告诉用户需要开启哪一项；不尝试绕过，也不替用户点击系统安全对话框。
+
+Harness 有三种形态，都要支持。前两种来自 DSH 源码文档，未必已在当前机器上实测，先看实际运行的是哪一种：
+
+- **打包版桌面应用**：应用名 “DeepSeek Harness”。
+- **源码开发版桌面应用**：据源码，应用名 “Harness Dev”，进程名可能显示为 `Electron`。
+- **浏览器里的 `dsh web`**：由 `dsh web` 启动本机网页界面（默认监听 `127.0.0.1:3080`），操作对象是浏览器窗口里的标签页，不是独立应用。
+
+Mac 上还常有其他 Electron 应用（如其他开发者工具、聊天客户端），也常有别的本地开发服务器页面。仅凭进程名 `Electron`、泛泛的窗口标题或 `localhost` 端口不能确认目标；浏览器形态要核对标签页标题、地址与页面内的 Harness 标识。
+
+对普通已运行的本机 Harness 使用原生 Computer Use。已运行的桌面版没有受支持的外部控制接口；不要靠猜测端口、读取凭据或私有数据库来绕过界面，包括开发版的调试端口和 `~/.dsh` 下的会话文件。只有用户明确提供了 `dsh web` 实例的访问方式（地址与令牌由用户给出，不自行搜寻）时，才可改用官方接口，细节见 [references/sky-workflow.md](references/sky-workflow.md)。
 
 ## 先确定模式与目标
 
@@ -20,7 +30,7 @@ description: "在 Windows 上控制 DeepSeek Harness（DSH）：定位指定会�
 
 从已有上下文提取应用/工作区/会话标识、目标、允许的输入与输出目录、受保护原件、可用成本和验收条件。只问真正阻止安全执行的缺项，其余用合理默认值推进。未明确会话而存在多个候选时，不猜选第一个。
 
-先按 Computer Use 的初始化方式导入 `@oai/sky`，检查返回的应用与窗口，唯一选定目标。窗口标题匹配后，还要查看实际截图里的 Harness 标识与会话，不能只信标题。**若捕获到 Codex、别的应用、锁屏或空白画面，不发送任何输入。** 重新枚举、恢复正确窗口并观察；无法恢复时报告一次。
+先按 Computer Use 的初始化方式导入 `@oai/sky`，检查返回的应用与窗口，唯一选定目标。应用名、窗口标题匹配后，还要查看实际截图里的 Harness 标识与会话，不能只信名称。**若捕获到 Codex、别的 Electron 应用、锁屏或空白画面，不发送任何输入。** 重新枚举、恢复正确窗口并观察；无法恢复时报告一次。
 
 具体初始化、焦点、裁剪与恢复细节见 [references/sky-workflow.md](references/sky-workflow.md)，首次进行 UI 操作前读取。
 
