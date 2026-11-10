@@ -40,13 +40,13 @@ flowchart TD
 
 ## 安装
 
-### 从本地仓库安装（推荐，适用于 macOS 分支）
+### 从本地仓库安装（推荐）
 
-先克隆仓库并切到 `macos` 分支，再把 skill 目录链接到 Codex 的用户技能目录：
+先克隆仓库（`main` 即 macOS 版），再把 skill 目录链接到 Codex 的用户技能目录：
 
 ```bash
 git clone https://github.com/StivoEgg/deepseek-harness-control.git
-cd deepseek-harness-control && git checkout macos
+cd deepseek-harness-control
 ln -s "$PWD/skills/deepseek-harness-control" ~/.codex/skills/deepseek-harness-control
 ```
 
@@ -64,7 +64,7 @@ sed -n 3p ~/.codex/skills/deepseek-harness-control/SKILL.md | cut -c1-40
 
 ### 通过技能安装器
 
-`$skill-installer` 只会装它指向的分支或仓库里的内容。上游 `emo-tao/deepseek-harness-control` 的 `main` 是 Windows 版，**不要用它的地址安装本 skill**。macOS 改动合并并推送到你自己的仓库后，才可以把地址指向那里的 `skills/deepseek-harness-control`。
+`$skill-installer` 只会装它指向的分支或仓库里的内容。上游 `emo-tao/deepseek-harness-control` 的 `main` 是 Windows 版，**不要用它的地址安装本 skill**。本仓库 `main` 是 macOS 版，可将地址指向 `https://github.com/StivoEgg/deepseek-harness-control/tree/main/skills/deepseek-harness-control`（该安装器路径尚未实测，装完请用上面的方法确认版本）。
 
 其他安装方式与目录规则见 [OpenAI 官方技能文档](https://learn.chatgpt.com/docs/build-skills)。
 
